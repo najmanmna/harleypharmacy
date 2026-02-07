@@ -169,7 +169,7 @@ export default function Hero() {
              </p>
              <div className="flex flex-col gap-2">
                 <Link href={slide.primaryHref} className="w-full">
-                  <button className="w-full h-14 bg-deep-charcoal text-white rounded-full font-bold flex items-center justify-center gap-2 group">
+                  <button className="w-full h-14 p-4 bg-deep-charcoal text-white rounded-full font-bold flex items-center justify-center gap-2 group">
                     <slide.primaryIcon className="w-4 h-4" />
                     {slide.primaryBtn}
                     <ArrowRight className="w-4 h-4 ml-auto mr-4 opacity-40" />
