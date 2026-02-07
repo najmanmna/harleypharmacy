@@ -2,69 +2,100 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { Quote } from 'lucide-react';
+import { Quote, ShieldCheck, Zap, Heart, FileCheck } from 'lucide-react';
 
 export default function Authority() {
-  const ref = useRef(null);
+  const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: containerRef,
     offset: ["start end", "end start"]
   });
 
-  // Parallax effect for the background
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 100]); // Parallax effect
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
 
   return (
-    <section ref={ref} className="relative py-32 overflow-hidden flex items-center justify-center">
+    <section id="authority" className="py-32 bg-[#F5F5F0] relative overflow-hidden">
       
-      {/* --- Parallax Background --- */}
-      <div className="absolute inset-0 z-0 h-[120%] -top-[10%]">
-        <motion.div style={{ y }} className="relative w-full h-full">
-           <img 
-             src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2880&auto=format&fit=crop" 
-             alt="Abstract Medical Background" 
-             className="w-full h-full object-cover"
-           />
-           {/* Heavy Overlay for text readability */}
-           <div className="absolute inset-0 bg-deep-charcoal/90"></div>
-        </motion.div>
+      {/* Background Watermark */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-[0.03]">
+         <div className="font-serif text-[20vw] leading-none text-deep-charcoal whitespace-nowrap -ml-20">
+            Harley St.
+         </div>
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+      <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row gap-16 items-center">
         
-        {/* The Quote */}
-        <motion.div 
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 0.8 }}
-        >
-          <Quote className="w-12 h-12 text-luxury-bronze mx-auto mb-8 opacity-50" />
-          
-          <h2 className="font-serif text-3xl md:text-5xl text-white leading-tight mb-8">
-            "We believe healthcare should be as <br className="hidden md:block" />
-            <span className="text-luxury-bronze italic">accessible</span> as it is <span className="text-luxury-bronze italic">exceptional</span>."
-          </h2>
-          
-          <div className="flex flex-col items-center gap-2 mb-16">
-             <span className="text-white font-bold tracking-wider uppercase text-sm">Dr. Sarah Jenkins</span>
-             <span className="text-gray-400 text-xs">Chief Medical Officer, Harley Pharmacy</span>
+        {/* --- LEFT: The "Roots" Image --- */}
+        <div className="w-full md:w-1/2 relative group" ref={containerRef}>
+          <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
+             <motion.div style={{ y }} className="absolute inset-0 bg-gray-900">
+                {/* Image: Suggests 'Traditional Care' meeting 'Modern Tech' */}
+                <img 
+                  src="https://images.unsplash.com/photo-1576602976047-174e57a47881?q=80&w=1969&auto=format&fit=crop" 
+                  alt="Clinical Excellence" 
+                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                />
+             </motion.div>
+             
+             {/* Overlay Content */}
+             <div className="absolute bottom-8 left-8 text-white">
+                <div className="text-xs font-bold tracking-widest uppercase mb-2">Since 2012</div>
+                <div className="font-serif text-2xl">Local Roots. National Reach.</div>
+             </div>
           </div>
-        </motion.div>
+          
+          {/* Floating Badge */}
+          <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl animate-[float_6s_ease-in-out_infinite]">
+             <img src="/logo.png" alt="Seal" className="w-16 h-auto opacity-20" />
+          </div>
+        </div>
 
-        {/* The "As Seen In" Divider */}
-        <div className="border-t border-white/10 w-full mb-12"></div>
+        {/* --- RIGHT: The Story & Mission --- */}
+        <div className="w-full md:w-1/2">
+          <motion.div style={{ opacity }}>
+            <Quote className="w-10 h-10 text-luxury-bronze mb-6 opacity-50" />
+            
+            <h2 className="font-serif text-3xl md:text-5xl text-deep-charcoal mb-8 leading-tight">
+              "Our mission is to make pharmacy access <span className="italic text-luxury-bronze">simple, compliant, and scalable</span> for everyone."
+            </h2>
+            
+            <div className="space-y-6 text-gray-500 text-lg font-light leading-relaxed mb-10">
+              <p>
+                Founded as a traditional pharmacy, serving communities with care and reliability. Today, we combine that same patient-first ethos with advanced digital technology.
+              </p>
+              <p>
+                From our roots as a local pharmacy, Harley has evolved into a digital-first healthcare solutions provider for patients, clinics, and businesses across the UK.
+              </p>
+            </div>
 
-        {/* Press Logos (Text based for cleanliness) */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-center opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-           {['VOGUE', 'GQ', 'WIRED', 'Men\'s Health', 'Forbes'].map((brand, i) => (
-             <span key={i} className="text-white font-serif text-xl md:text-2xl font-bold tracking-widest cursor-default">
-               {brand}
-             </span>
-           ))}
+            {/* The Values Grid (Replaces Signature) */}
+            <div className="grid grid-cols-2 gap-6 pt-8 border-t border-gray-200">
+               <ValueItem icon={ShieldCheck} title="Trust" desc="Partner confidence is our priority." />
+               <ValueItem icon={Zap} title="Innovation" desc="Technology to streamline care." />
+               <ValueItem icon={Heart} title="Care" desc="An extension of your team." />
+               <ValueItem icon={FileCheck} title="Compliance" desc="Highest regulatory standards." />
+            </div>
+
+          </motion.div>
         </div>
 
       </div>
     </section>
+  );
+}
+
+// Sub-component for values
+function ValueItem({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+  return (
+    <div className="flex gap-3">
+      <div className="mt-1">
+        <Icon className="w-5 h-5 text-luxury-bronze" />
+      </div>
+      <div>
+        <h4 className="font-bold text-deep-charcoal text-sm uppercase tracking-wide">{title}</h4>
+        <p className="text-xs text-gray-500 mt-1">{desc}</p>
+      </div>
+    </div>
   );
 }

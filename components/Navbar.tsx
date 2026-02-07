@@ -3,11 +3,19 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ShoppingBag, User, Search, Menu, X, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // --- PROGRESS BAR LOGIC ---
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { 
+    stiffness: 100, 
+    damping: 30, 
+    restDelta: 0.001 
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,26 +42,37 @@ export default function Navbar() {
         </div>
 
         {/* Main Navigation Bar */}
-        <div className={`bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ${
+        <div className={`relative bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ${
           isScrolled ? 'bg-white/95' : 'bg-white/80'
         }`}>
+          
+          {/* --- SCROLL PROGRESS BAR --- */}
+          <motion.div
+            className="absolute bottom-0 left-0 right-0 h-[2px] bg-luxury-bronze origin-left z-50"
+            style={{ scaleX }}
+          />
+
           <div className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ${
             isScrolled ? 'h-16' : 'h-20'
           }`}>
             
-            {/* --- LOGO AREA: Back to Clean Typography --- */}
+            {/* Logo */}
             <Link href="/" className="group z-50 relative">
               <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-deep-charcoal">
                 Harley<span className="text-luxury-bronze group-hover:text-luxury-bronze-dark transition-colors">Pharmacy</span>
               </h1>
             </Link>
 
-            {/* Desktop Nav */}
+            {/* Desktop Nav - REPLACED PRESCRIPTIONS WITH SERVICES */}
             <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide">
-              {['Treatments', 'Prescriptions', 'Our Story'].map((item) => (
+              {['Treatments', 'Services', 'Our Story'].map((item) => (
                 <Link 
                    key={item} 
-                   href={item === 'Our Story' ? '/#authority' : `/${item.toLowerCase().replace(' ', '-')}`} 
+                   href={
+                     item === 'Our Story' ? '/#authority' : 
+                     item === 'Services' ? '/services' : 
+                     `/${item.toLowerCase()}`
+                   } 
                    className="relative group py-2"
                 >
                   <span className="text-gray-600 group-hover:text-deep-charcoal transition-colors">{item}</span>
@@ -128,10 +147,11 @@ export default function Navbar() {
               </div>
 
               <div className="flex flex-col space-y-6">
-                {['Treatments', 'Prescriptions', 'Our Story', 'Account'].map((item) => (
+                {['Treatments', 'Services', 'Our Story', 'Account'].map((item) => (
                   <Link 
                     key={item} 
-                    href="#" 
+                    href={item === 'Our Story' ? '/#authority' : item === 'Services' ? '/services' : '#'} 
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className="text-2xl font-serif text-deep-charcoal hover:text-luxury-bronze transition-colors"
                   >
                     {item}
@@ -158,4 +178,4 @@ export default function Navbar() {
       </AnimatePresence>
     </>
   );
-}   
+}

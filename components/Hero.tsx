@@ -3,13 +3,13 @@
 import { ArrowRight, CheckCircle2, ShieldCheck, ChevronRight, ChevronLeft, ShoppingBag, Building2, Stethoscope } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
-// --- SLIDE DATA ---
+// --- SLIDE DATA WITH ROUTES ---
 const slides = [
   {
     id: 1,
     type: "patient",
-    // Uses object-position to force subject to the right
     image: "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?q=80&w=2680&auto=format&fit=crop", 
     position: "object-[75%_center]", 
     headline: "Pharmacy.",
@@ -18,33 +18,39 @@ const slides = [
     theme: "light",
     primaryBtn: "Shop Collection",
     primaryIcon: ShoppingBag,
-    secondaryBtn: "View Best Sellers"
+    primaryHref: "/treatments", // Routes to Clinical Directory
+    secondaryBtn: "View Best Sellers",
+    secondaryHref: "/#featured" // Anchor to Featured Section
   },
   {
     id: 2,
     type: "clinic",
-    image: "https://plus.unsplash.com/premium_photo-1681967046979-fb9ac9a34495?q=80&w=1144&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    position: "object-[center]", // This image is centered nicely
+    image: "https://plus.unsplash.com/premium_photo-1681967046979-fb9ac9a34495?q=80&w=1144&auto=format&fit=crop",
+    position: "object-[center]", 
     headline: "Powering.",
     subhead: "Clinics.",
     subline: "The digital infrastructure for private practices. Issue GPhC-compliant prescriptions instantly.",
     theme: "dark",
     primaryBtn: "Partner Portal",
     primaryIcon: Building2,
-    secondaryBtn: "For Businesses"
+    primaryHref: "/clinics", // Routes to B2B Landing Page
+    secondaryBtn: "For Businesses",
+    secondaryHref: "/services" // Routes to Services Tier
   },
   {
     id: 3,
     type: "consult",
     image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=2864&auto=format&fit=crop",
-    position: "object-[80%_center]", // Pushes the doctor to the right
+    position: "object-[80%_center]", 
     headline: "Expertise.",
     subhead: "On Demand.",
     subline: "Need advice? Connect with UK-registered doctors and get your prescription approved in minutes.",
     theme: "light",
     primaryBtn: "Start Consultation",
     primaryIcon: Stethoscope,
-    secondaryBtn: "How it Works"
+    primaryHref: "/treatments", // Routes to directory for start
+    secondaryBtn: "How it Works",
+    secondaryHref: "/#how-it-works" // Anchor to Process section
   }
 ];
 
@@ -76,30 +82,25 @@ export default function Hero() {
           transition={{ duration: 1.2 }}
           className="absolute inset-0 z-0"
         >
-          {/* Main Image */}
           <img 
              src={slide.image} 
              alt="Hero Background" 
              className={`w-full h-full object-cover transition-all duration-1000 ${slide.position}`}
           />
           
-          {/* THE FIX: "Studio Wall" Gradient 
-              This forces a clean canvas on the left for text, 
-              regardless of the image brightness. */}
           <div className={`absolute inset-0 bg-gradient-to-r ${
              isDark 
                ? 'from-black/90 via-black/40 to-transparent' 
                : 'from-medical-white/95 via-medical-white/40 to-transparent'
           } z-10 w-[70%]`}></div>
 
-          {/* Bottom Fade for Card readability */}
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
         </motion.div>
       </AnimatePresence>
 
       {/* --- LAYER 2: CONTENT --- */}
       
-      {/* TOP LEFT (Headline) */}
+      {/* Headlines */}
       <div className="absolute top-48 left-6 md:left-12 z-20 pointer-events-none max-w-[60%]">
          <div className="overflow-hidden">
             <AnimatePresence mode='wait'>
@@ -120,7 +121,7 @@ export default function Hero() {
          </div>
       </div>
 
-      {/* TOP RIGHT (Dynamic Badge) */}
+      {/* Trust Badges */}
       <div className="absolute top-48 right-6 md:right-12 z-20 hidden md:block">
          <motion.div 
             initial={{ opacity: 0, x: 20 }}
@@ -141,7 +142,7 @@ export default function Hero() {
          </motion.div>
       </div>
 
-      {/* BOTTOM RIGHT (Smart Action Card) */}
+      {/* Action Card */}
       <div className="absolute bottom-12 right-6 md:right-12 z-30 max-w-md w-full">
          <AnimatePresence mode='wait'>
             <motion.div 
@@ -152,7 +153,6 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="bg-white/95 backdrop-blur-2xl border border-white/50 p-8 rounded-[2rem] shadow-2xl"
             >
-               {/* Audience Tag */}
                <div className="mb-4">
                   <span className="text-[10px] font-bold tracking-widest uppercase bg-deep-charcoal text-white px-3 py-1 rounded-full">
                     {slide.type === 'patient' ? 'For Shoppers' : slide.type === 'clinic' ? 'For Clinics' : 'For Patients'}
@@ -164,23 +164,27 @@ export default function Hero() {
                </p>
                
                <div className="flex flex-col gap-3">
-                  {/* Primary Button */}
-                  <button className="w-full p-6 bg-deep-charcoal text-white h-14 rounded-full font-medium hover:bg-black transition-all flex items-center justify-center gap-2 group shadow-lg">
-                    <slide.primaryIcon className="w-4 h-4" />
-                    {slide.primaryBtn}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform ml-auto mr-4 opacity-50" />
-                  </button>
+                  {/* Primary Linked Button */}
+                  <Link href={slide.primaryHref} className="w-full">
+                    <button className="w-full p-6 bg-deep-charcoal text-white h-14 rounded-full font-medium hover:bg-black transition-all flex items-center justify-center gap-2 group shadow-lg">
+                      <slide.primaryIcon className="w-4 h-4" />
+                      {slide.primaryBtn}
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform ml-auto mr-4 opacity-50" />
+                    </button>
+                  </Link>
                   
-                  {/* Secondary Button */}
-                  <button className="w-full bg-transparent border border-gray-300 text-deep-charcoal h-14 rounded-full font-medium hover:border-luxury-bronze hover:text-luxury-bronze transition-all">
-                    {slide.secondaryBtn}
-                  </button>
+                  {/* Secondary Linked Button */}
+                  <Link href={slide.secondaryHref} className="w-full">
+                    <button className="w-full bg-transparent border border-gray-300 text-deep-charcoal h-14 rounded-full font-medium hover:border-luxury-bronze hover:text-luxury-bronze transition-all">
+                      {slide.secondaryBtn}
+                    </button>
+                  </Link>
                </div>
             </motion.div>
          </AnimatePresence>
       </div>
 
-      {/* BOTTOM LEFT (Controls) */}
+      {/* Navigation Controls */}
       <div className="absolute bottom-12 left-6 md:left-12 z-30 flex items-center gap-6">
          <div className="flex gap-2">
             <button onClick={prevSlide} className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${isDark ? 'border-white/30 text-white hover:bg-white hover:text-black' : 'border-black/10 text-black hover:bg-black hover:text-white'}`}>

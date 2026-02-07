@@ -13,17 +13,18 @@ import TrustStrip from "@/components/TrustStrip"; // <--- New Component for Soci
 export default function Home() {
   return (
     <main className="min-h-screen bg-medical-white">
-<Navbar />
+
       <Hero />
       <TrustStrip /> {/* <--- New Component for Social Proof */}
       <WhyChooseUs /> {/* <--- Placed here for immediate trust building */}
+          <Authority />
       <HowItWorks />
       <Treatments />
       <FeaturedProducts />
-      {/* <Authority /> */}
+   
       <ClinicPartner />
       <FinalMessage />
-      <Footer />
+
     </main>
   );
 }

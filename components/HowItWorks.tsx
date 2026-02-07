@@ -2,6 +2,7 @@
 
 import { ShoppingBag, FileCheck, Truck, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
+import SpotlightCard from './ui/SpotlightCard'; // <--- Import the magic
 
 const steps = [
   {
@@ -25,10 +26,10 @@ export default function HowItWorks() {
   return (
     <section className="py-24 bg-deep-charcoal relative overflow-hidden">
       
-      {/* Background Texture - Adds a subtle 'noise' or grain for premium feel */}
+      {/* Background Texture */}
       <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
       
-      {/* Ambient Glow - A soft bronze light in the center */}
+      {/* Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-luxury-bronze/10 blur-[120px] rounded-full pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -56,12 +57,10 @@ export default function HowItWorks() {
         {/* --- The Steps Grid --- */}
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/* ANIMATED CONNECTOR LINE (Desktop Only) */}
+          {/* CONNECTOR LINE (Desktop Only) */}
           <div className="hidden md:block absolute top-[4rem] left-[16%] right-[16%] h-12 z-0 pointer-events-none">
              <svg className="w-full h-full" preserveAspectRatio="none">
-               {/* Track - Darker for dark mode */}
                <line x1="0" y1="50%" x2="100%" y2="50%" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="4 4" />
-               {/* Gold Progress Line */}
                <motion.path
                  d="M 0 24 L 1000 24" 
                  stroke="#A48870" 
@@ -86,8 +85,11 @@ export default function HowItWorks() {
               transition={{ delay: index * 0.25, duration: 0.5 }}
               className="relative flex flex-col items-center text-center group"
             >
-              {/* Glass Card Container */}
-              <div className="relative z-10 w-full p-8 rounded-3xl transition-all duration-500 bg-white/5 border border-white/5 hover:bg-white/10 hover:border-luxury-bronze/30 backdrop-blur-sm group-hover:-translate-y-2">
+              {/* UPGRADED: Wrapped in SpotlightCard for the magic reveal */}
+              <SpotlightCard 
+                className="w-full p-8 h-full bg-white/5 border-white/5 hover:border-luxury-bronze/30 transition-colors"
+                spotlightColor="rgba(255, 255, 255, 0.08)" // Subtle white light for clarity
+              >
                 
                 {/* Icon Circle */}
                 <div className="relative mx-auto w-24 h-24 mb-8">
@@ -112,12 +114,12 @@ export default function HowItWorks() {
                 <p className="text-gray-400 text-sm leading-relaxed mx-auto font-light">
                   {step.desc}
                 </p>
-              </div>
+              </SpotlightCard>
             </motion.div>
           ))}
         </div>
 
-        {/* --- Trust Footer (Light Text for Dark Mode) --- */}
+        {/* --- Trust Footer --- */}
         <div className="mt-20 pt-10 border-t border-white/10">
            <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-16 opacity-70 hover:opacity-100 transition-opacity">
               {[
