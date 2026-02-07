@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { ShoppingBag, User, Search, Menu, X, ChevronRight } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X, ChevronRight, Phone, MapPin } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // --- PROGRESS BAR LOGIC ---
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { 
     stiffness: 100, 
@@ -19,158 +18,180 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Animation variants for the mobile menu links
+  const menuListVariants = {
+    closed: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
+    open: { transition: { staggerChildren: 0.07, delayChildren: 0.2 } }
+  };
+
+  const itemVariants = {
+    closed: { x: 50, opacity: 0 },
+    open: { x: 0, opacity: 1 }
+  };
+
   return (
     <>
-      <nav 
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled ? 'shadow-sm' : ''
-        }`}
-      >
-        {/* Top Trust Bar */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'shadow-lg' : ''}`}>
+        
+        {/* --- TOP TRUST BAR (Hidden on scroll for more screen real estate) --- */}
         <div className={`bg-deep-charcoal text-white overflow-hidden transition-all duration-500 ease-in-out ${
-          isScrolled ? 'max-h-0 py-0 opacity-0' : 'max-h-10 py-2.5 opacity-100'
+          isScrolled ? 'max-h-0 opacity-0' : 'max-h-12 py-2 md:py-2.5 opacity-100'
         }`}>
-          <div className="text-[10px] md:text-xs text-center tracking-[0.15em] uppercase font-medium">
-            GPhC Registered Pharmacy: 1110426 <span className="mx-2 opacity-50">|</span> UK Licensed Doctors
+          <div className="text-[9px] md:text-xs text-center tracking-[0.1em] md:tracking-[0.15em] uppercase font-medium px-4">
+            GPhC Reg: 1110426 <span className="mx-1 md:mx-2 opacity-30">|</span> UK Licensed Pharmacy
           </div>
         </div>
 
-        {/* Main Navigation Bar */}
-        <div className={`relative bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ${
-          isScrolled ? 'bg-white/95' : 'bg-white/80'
+        {/* --- MAIN NAV BAR --- */}
+        <div className={`relative bg-white/95 backdrop-blur-md border-b border-gray-100 transition-all duration-500 ${
+          isScrolled ? 'h-16' : 'h-20'
         }`}>
           
-          {/* --- SCROLL PROGRESS BAR --- */}
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-[2px] bg-luxury-bronze origin-left z-50"
-            style={{ scaleX }}
-          />
+          <motion.div className="absolute bottom-0 left-0 right-0 h-[3px] bg-luxury-bronze origin-left z-50" style={{ scaleX }} />
 
-          <div className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ${
-            isScrolled ? 'h-16' : 'h-20'
-          }`}>
+          <div className="max-w-7xl mx-auto h-full px-4 md:px-6 flex items-center justify-between">
             
-            {/* Logo */}
-            <Link href="/" className="group z-50 relative">
-              <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-deep-charcoal">
-                Harley<span className="text-luxury-bronze group-hover:text-luxury-bronze-dark transition-colors">Pharmacy</span>
+            {/* Logo: Slightly smaller on mobile */}
+            <Link href="/" className="z-50 shrink-0">
+              <h1 className="font-serif text-xl md:text-3xl font-bold tracking-tight text-deep-charcoal">
+                Harley<span className="text-luxury-bronze">Pharmacy</span>
               </h1>
             </Link>
 
-            {/* Desktop Nav - REPLACED PRESCRIPTIONS WITH SERVICES */}
-            <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
               {['Treatments', 'Services', 'Our Story'].map((item) => (
                 <Link 
-                   key={item} 
-                   href={
-                     item === 'Our Story' ? '/#authority' : 
-                     item === 'Services' ? '/services' : 
-                     `/${item.toLowerCase()}`
-                   } 
-                   className="relative group py-2"
+                  key={item} 
+                  href={item === 'Our Story' ? '/#authority' : `/${item.toLowerCase()}`} 
+                  className="text-gray-600 hover:text-deep-charcoal transition-colors relative group"
                 >
-                  <span className="text-gray-600 group-hover:text-deep-charcoal transition-colors">{item}</span>
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-luxury-bronze transition-all duration-300 group-hover:w-full"></span>
+                  {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-luxury-bronze transition-all group-hover:w-full"></span>
                 </Link>
               ))}
-              
-              <div className="h-4 w-px bg-gray-300 mx-2"></div>
-              
-              <Link href="/clinics" className="text-luxury-bronze hover:text-luxury-bronze-dark font-semibold transition-colors flex items-center gap-1 group">
-                For Clinics
-                <ChevronRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+              <Link href="/clinics" className="text-luxury-bronze font-bold flex items-center gap-1">
+                For Clinics <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
 
-            {/* Icons / Actions */}
-            <div className="flex items-center space-x-5 md:space-x-6 text-deep-charcoal">
-              <button className="hover:text-luxury-bronze transition-colors p-1">
-                <Search className="w-5 h-5" strokeWidth={1.5} />
-              </button>
+            {/* Action Icons: Optimized for Touch */}
+            <div className="flex items-center space-x-2 md:space-x-6">
+              <motion.button whileTap={{ scale: 0.9 }} className="p-2.5 text-deep-charcoal hover:text-luxury-bronze transition-colors">
+                <Search className="w-5 h-5 md:w-5 md:h-5" strokeWidth={2} />
+              </motion.button>
               
-              <button className="hidden md:block hover:text-luxury-bronze transition-colors p-1">
-                <User className="w-5 h-5" strokeWidth={1.5} />
-              </button>
+              <motion.button whileTap={{ scale: 0.9 }} className="hidden sm:block p-2.5 text-deep-charcoal hover:text-luxury-bronze transition-colors">
+                <User className="w-5 h-5" strokeWidth={2} />
+              </motion.button>
               
-              <button className="relative group hover:text-luxury-bronze transition-colors p-1">
-                <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
-                <span className="absolute -top-1 -right-1 bg-luxury-bronze text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-medium group-hover:bg-deep-charcoal transition-colors">
-                  0
-                </span>
-              </button>
+              <motion.button whileTap={{ scale: 0.9 }} className="relative p-2.5 text-deep-charcoal hover:text-luxury-bronze transition-colors">
+                <ShoppingBag className="w-5 h-5" strokeWidth={2} />
+                <span className="absolute top-1.5 right-1.5 bg-luxury-bronze text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">0</span>
+              </motion.button>
 
-              <button 
-                className="md:hidden p-1 hover:text-luxury-bronze transition-colors"
+              <motion.button 
+                whileTap={{ scale: 0.9 }}
+                className="md:hidden p-2.5 bg-gray-50 rounded-full text-deep-charcoal"
                 onClick={() => setIsMobileMenuOpen(true)}
               >
-                <Menu className="w-6 h-6" strokeWidth={1.5} />
-              </button>
+                <Menu className="w-6 h-6" strokeWidth={2} />
+              </motion.button>
             </div>
 
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* --- MOBILE MENU DRAWER --- */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60]"
+              className="fixed inset-0 bg-deep-charcoal/40 backdrop-blur-md z-[60]"
             />
             
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-white z-[70] shadow-2xl border-l border-gray-100 p-8 flex flex-col"
+              className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-[70] shadow-2xl flex flex-col"
             >
-              <div className="flex items-center justify-between mb-12">
-                <span className="font-serif text-xl font-bold text-deep-charcoal">Menu</span>
-                <button 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 -mr-2 text-gray-400 hover:text-deep-charcoal transition-colors"
-                >
-                  <X className="w-6 h-6" />
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-50">
+                <span className="font-serif text-xl font-bold text-deep-charcoal">Navigation</span>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-gray-100 rounded-full">
+                  <X className="w-6 h-6 text-gray-400" />
                 </button>
               </div>
 
-              <div className="flex flex-col space-y-6">
-                {['Treatments', 'Services', 'Our Story', 'Account'].map((item) => (
-                  <Link 
-                    key={item} 
-                    href={item === 'Our Story' ? '/#authority' : item === 'Services' ? '/services' : '#'} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-2xl font-serif text-deep-charcoal hover:text-luxury-bronze transition-colors"
-                  >
-                    {item}
-                  </Link>
-                ))}
-                <div className="h-px bg-gray-100 my-4"></div>
-                <Link href="/clinics" className="text-lg font-medium text-luxury-bronze flex items-center justify-between group">
-                  For Clinics
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
+              {/* Drawer Content */}
+              <motion.div 
+                variants={menuListVariants} initial="closed" animate="open"
+                className="flex-1 overflow-y-auto px-6 py-8"
+              >
+                <div className="flex flex-col space-y-1">
+                  {[
+                    { name: 'Treatments', href: '/treatments' },
+                    { name: 'Clinical Services', href: '/services' },
+                    { name: 'Our Authority', href: '/#authority' },
+                    { name: 'Patient Account', href: '#' }
+                  ].map((item) => (
+                    <motion.div key={item.name} variants={itemVariants}>
+                      <Link 
+                        href={item.href} 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center justify-between py-4 group"
+                      >
+                        <span className="text-2xl font-serif text-deep-charcoal group-active:text-luxury-bronze transition-colors">{item.name}</span>
+                        <ChevronRight className="w-5 h-5 text-gray-300" />
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
 
-              <div className="mt-auto">
-                 <button className="w-full bg-deep-charcoal text-white py-4 rounded-full font-medium mb-4">
-                   Sign In
-                 </button>
-                 <p className="text-center text-xs text-gray-400 uppercase tracking-widest">
-                   GPhC Reg: 1110426
-                 </p>
+                {/* B2B Section */}
+                <motion.div variants={itemVariants} className="mt-10 p-6 bg-gray-50 rounded-3xl">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 block">For Professionals</span>
+                  <Link 
+                    href="/clinics" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between group"
+                  >
+                    <div className="flex flex-col">
+                       <span className="text-lg font-bold text-deep-charcoal group-active:text-luxury-bronze">Clinic Partnerships</span>
+                       <span className="text-xs text-gray-500">Infrastructure & API Access</span>
+                    </div>
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                       <ChevronRight className="w-4 h-4 text-luxury-bronze" />
+                    </div>
+                  </Link>
+                </motion.div>
+              </motion.div>
+
+              {/* Drawer Footer */}
+              <div className="p-6 bg-white border-t border-gray-50">
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                   <button className="flex flex-col items-center justify-center py-4 bg-gray-50 rounded-2xl gap-2 active:bg-gray-100 transition-colors">
+                      <Phone className="w-4 h-4 text-luxury-bronze" />
+                      <span className="text-[10px] font-bold uppercase text-deep-charcoal">Call Us</span>
+                   </button>
+                   <button className="flex flex-col items-center justify-center py-4 bg-gray-50 rounded-2xl gap-2 active:bg-gray-100 transition-colors">
+                      <MapPin className="w-4 h-4 text-luxury-bronze" />
+                      <span className="text-[10px] font-bold uppercase text-deep-charcoal">Find Us</span>
+                   </button>
+                </div>
+                <p className="text-center text-[10px] text-gray-400 uppercase tracking-widest leading-relaxed">
+                  GPhC Registered Pharmacy: 1110426<br/>
+                  Harley Street, London
+                </p>
               </div>
             </motion.div>
           </>

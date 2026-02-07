@@ -5,24 +5,32 @@ import { motion, useSpring, useMotionValue } from "framer-motion";
 
 export default function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false); // New state to handle mounting
   
-  // Motion values for raw mouse position
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Smooth spring physics for the "Aura" (lagging effect)
   const springConfig = { damping: 25, stiffness: 150 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    // 1. Check if the device has a mouse/fine pointer
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+    
+    // Initial check
+    if (mediaQuery.matches) setIsVisible(true);
+
+    // Listener for window resizing/device switching
+    const handler = (e: MediaQueryListEvent) => setIsVisible(e.matches);
+    mediaQuery.addEventListener("change", handler);
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
-      // Check if the hovered element is a button, link, or has a 'cursor-pointer' class
       const target = e.target as HTMLElement;
       if (
         target.tagName === "BUTTON" ||
@@ -37,18 +45,24 @@ export default function CustomCursor() {
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseover", handleMouseOver);
+    if (mediaQuery.matches) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseover", handleMouseOver);
+    }
 
     return () => {
+      mediaQuery.removeEventListener("change", handler);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
     };
   }, [mouseX, mouseY]);
 
+  // If mobile or touch-only device, don't render anything
+  if (!isVisible) return null;
+
   return (
     <>
-      {/* 1. The Main Dot (Immediate Follow) */}
+      {/* 1. The Main Dot */}
       <motion.div
         className="fixed top-0 left-0 w-2 h-2 bg-luxury-bronze rounded-full pointer-events-none z-[9999] mix-blend-difference"
         style={{
@@ -59,7 +73,7 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* 2. The Aura (Spring Follow) */}
+      {/* 2. The Aura */}
       <motion.div
         className="fixed top-0 left-0 rounded-full border border-luxury-bronze/30 pointer-events-none z-[9998]"
         animate={{

@@ -29,7 +29,7 @@ export default function TreatmentPage() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] p-32">
+    <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-32">
       
       {/* --- SECTION 1: THE CLINICAL HERO --- */}
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
