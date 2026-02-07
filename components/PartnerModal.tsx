@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, building2, ShieldCheck, Mail, User } from 'lucide-react';
+// CHANGED: building2 -> Building2
+import { X, Send, Building2, ShieldCheck, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 
 export default function PartnerModal({ isOpen, onClose, tierTitle }: { isOpen: boolean, onClose: () => void, tierTitle: string }) {
@@ -51,7 +52,8 @@ export default function PartnerModal({ isOpen, onClose, tierTitle }: { isOpen: b
                 </div>
 
                 <div className="relative">
-                  <building2 className="absolute left-4 top-4 w-4 h-4 text-gray-400" />
+                  {/* CHANGED: <building2> -> <Building2> */}
+                  <Building2 className="absolute left-4 top-4 w-4 h-4 text-gray-400" />
                   <input type="text" placeholder="Clinic or Company Name" className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-bronze/20 focus:border-luxury-bronze transition-all" />
                 </div>
               </div>
@@ -72,10 +74,6 @@ export default function PartnerModal({ isOpen, onClose, tierTitle }: { isOpen: b
                   Submit Application
                   <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </button>
-                <div className="mt-6 flex items-center gap-3 justify-center text-[10px] text-gray-400 font-medium">
-                  <ShieldCheck className="w-3 h-3 text-green-500" />
-                  GPHC & MHRA COMPLIANT DATA HANDLING
-                </div>
               </div>
             </form>
           </motion.div>
